@@ -21,8 +21,7 @@ services:
     # server.pidの消去(Rails特有の問題) & アプリケーション起動
     # command: /bin/sh -c "rm -f /myapp/tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
-      - ./rails:/myapp
-      - .rails/vendor/bundle:/myapp/vendor/bundle
+      - ./app:/myapp
     environment:
       TZ: Asia/Tokyo
       RAILS_ENV: development
@@ -34,3 +33,6 @@ services:
     # フォアグラウンドプロセスがあればわざわざ設定する必要ない
     tty: true
     stdin_open: true
+
+volumes:
+  mysql-data:
