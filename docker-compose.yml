@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  db:
+    platform: linux/x86_64
+    image: mysql5.6
+    environment:
+      MYSQL_ROOT_PASSWARD: password
+    volumes: 
+      - mysql-data:/var/lib/mysql
+      - /tmp/dockerdir:/etc/mysql/conf.d
+    ports:
+      - 3306:3306
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    # server.pidの消去(Rails特有の問題) & アプリケーション起動
+    # command: /bin/sh -c "rm -f /myapp/tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - ./rails:/myapp
+      - .rails/vendor/bundle:/myapp/vendor/bundle
+    environment:
+      TZ: Asia/Tokyo
+      RAILS_ENV: development
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+    # コンテナがすぐに終了（正常終了）しないようにする設定
+    # フォアグラウンドプロセスがあればわざわざ設定する必要ない
+    tty: true
+    stdin_open: true
